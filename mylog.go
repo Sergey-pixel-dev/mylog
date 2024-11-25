@@ -9,13 +9,14 @@ import (
 type MyLogger struct {
 	dscrpt *os.File
 	mutex  sync.Mutex
-} //проверить на состояние гонки, мб добавить мютексы при записи в файл
+}
 
 func NewLogger() *MyLogger {
 	return &MyLogger{dscrpt: nil, mutex: sync.Mutex{}}
 }
 
 func (logger *MyLogger) CloseMyLogger() {
+	logger.mutex.Lock()
 	err := logger.dscrpt.Close()
 	if err != nil {
 		os.Stderr.WriteString("error log close: " + err.Error())
@@ -27,7 +28,7 @@ func (logger *MyLogger) CloseMyLogger() {
 
 func (logger *MyLogger) LogINFO(msg_info string) {
 	logger.mutex.Lock()
-	_, err := logger.dscrpt.WriteString("INFO, " + time.Now().Format("2006-01-02 15:04:05") + " , " + msg_info)
+	_, err := logger.dscrpt.WriteString("INFO, " + time.Now().Format("2006-01-02 15:04:05") + ", " + msg_info + "\n")
 	if err != nil {
 		os.Stderr.WriteString("error logging: " + err.Error())
 	}
@@ -35,7 +36,7 @@ func (logger *MyLogger) LogINFO(msg_info string) {
 }
 func (logger *MyLogger) LogWARN(msg_info string) {
 	logger.mutex.Lock()
-	_, err := logger.dscrpt.WriteString("WARN, " + time.Now().Format("2006-01-02 15:04:05") + " , " + msg_info)
+	_, err := logger.dscrpt.WriteString("WARN, " + time.Now().Format("2006-01-02 15:04:05") + ", " + msg_info + "\n")
 	if err != nil {
 		os.Stderr.WriteString("error logging: " + err.Error())
 	}
@@ -43,7 +44,7 @@ func (logger *MyLogger) LogWARN(msg_info string) {
 }
 func (logger *MyLogger) LogERROR(msg_info string) {
 	logger.mutex.Lock()
-	_, err := logger.dscrpt.WriteString("ERROR, " + time.Now().Format("2006-01-02 15:04:05") + " , " + msg_info)
+	_, err := logger.dscrpt.WriteString("ERROR, " + time.Now().Format("2006-01-02 15:04:05") + ", " + msg_info + "\n")
 	if err != nil {
 		os.Stderr.WriteString("error logging: " + err.Error())
 	}
@@ -51,7 +52,7 @@ func (logger *MyLogger) LogERROR(msg_info string) {
 }
 func (logger *MyLogger) LogFATAL(msg_info string) {
 	logger.mutex.Lock()
-	_, err := logger.dscrpt.WriteString("FATAL, " + time.Now().Format("2006-01-02 15:04:05") + " , " + msg_info)
+	_, err := logger.dscrpt.WriteString("FATAL, " + time.Now().Format("2006-01-02 15:04:05") + ", " + msg_info + "\n")
 	if err != nil {
 		os.Stderr.WriteString("error logging: " + err.Error())
 	}

@@ -2,26 +2,21 @@ package main
 
 import (
 	"fmt"
+	"mylog"
 	"os"
+	"strconv"
 )
 
 func main() {
-	// Открываем файл для логов
 	logFile, err := os.OpenFile("app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		fmt.Println("Ошибка открытия файла:", err)
+		fmt.Println(err.Error())
 		return
 	}
-	defer logFile.Close() // Закрываем файл при завершении работы программы
-
-	// Записываем несколько сообщений в лог
+	mlogger := mylog.NewLogger()
+	mlogger.SetDescriptor(logFile)
 	for i := 0; i < 5; i++ {
-		logMessage := fmt.Sprintf("Запись %d в лог\n", i+1)
-		_, err := logFile.WriteString(logMessage)
-		if err != nil {
-			fmt.Println("Ошибка записи в лог:", err)
-			return
-		}
+		mlogger.LogINFO("i: " + strconv.Itoa(i))
 	}
-	fmt.Println("Логирование завершено")
+	mlogger.CloseMyLogger()
 }

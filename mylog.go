@@ -1,4 +1,4 @@
-package core
+package github.com/Sergey-pixel-dev/mylog
 
 import (
 	"os"

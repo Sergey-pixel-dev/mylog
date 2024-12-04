@@ -13,8 +13,9 @@ func main() {
 		fmt.Println(err.Error())
 		return
 	}
+	logFile.Close()
 	mlogger := mylog.NewLogger()
-	mlogger.SetDescriptor(logFile)
+	mlogger.SetDescriptor(os.Stderr)
 	for i := 0; i < 5; i++ {
 		mlogger.LogINFO("i: " + strconv.Itoa(i))
 	}
